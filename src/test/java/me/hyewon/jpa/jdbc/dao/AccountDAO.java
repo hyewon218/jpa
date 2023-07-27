@@ -6,6 +6,7 @@ import me.hyewon.jpa.jdbc.vo.AccountVO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import util.JDBCUtil;
 
@@ -24,15 +25,23 @@ public class AccountDAO {
 
     //CRUD 기능의 메소드 구현
     //계정 등록
-    public Integer insertAccount(AccountVO vo) {
+    public Integer insertAccount(AccountVO vo) throws SQLException {
         var id = -1;
+        String[] returnId = {"id"};
         try {
             conn = JDBCUtil.getConnection();
             assert conn != null;
-            stmt = conn.prepareStatement(ACCOUNT_INSERT);
+            stmt = conn.prepareStatement(ACCOUNT_INSERT, returnId);
             stmt.setString(1, vo.getUsername());
             stmt.setString(2, vo.getPassword());
             id = stmt.executeUpdate();
+
+            try(ResultSet rs = stmt.getGeneratedKeys()) {
+                if(rs.next()) {
+                    // 첫번째 값의 id를 받아온다.
+                    id = rs.getInt(1);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

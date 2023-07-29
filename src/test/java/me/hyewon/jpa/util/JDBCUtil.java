@@ -1,4 +1,4 @@
-package util;
+package me.hyewon.jpa.util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

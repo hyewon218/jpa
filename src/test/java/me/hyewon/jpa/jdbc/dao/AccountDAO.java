@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import util.JDBCUtil;
+import me.hyewon.jpa.util.JDBCUtil;
 
 public class AccountDAO {
 

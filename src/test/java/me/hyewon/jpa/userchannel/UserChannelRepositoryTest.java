@@ -2,6 +2,7 @@ package me.hyewon.jpa.userchannel;
 
 import me.hyewon.jpa.channel.Channel;
 import me.hyewon.jpa.channel.ChannelRepository;
+import me.hyewon.jpa.common.PageDTO;
 import me.hyewon.jpa.user.User;
 import me.hyewon.jpa.user.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -95,5 +96,23 @@ class UserChannelRepositoryTest {
 
     // then
     assert users.get(0).getPassword().equals(newUser3.getPassword());
+  }
+
+  @Test
+  void pageDTOTest() {
+    // given
+    var newUser1 = User.builder().username("new_user").password("new-pass1").build();
+    var newUser2 = User.builder().username("new_user").password("new-pass2").build();
+    var newUser3 = User.builder().username("new_user").password("new-pass3").build();
+    userRepository.save(newUser1);
+    userRepository.save(newUser2);
+    userRepository.save(newUser3);
+    var pageDTO = new PageDTO(1, 2, "password");
+
+    // when
+    var page = userRepository.findAll(pageDTO.toPageable());
+
+    // then
+    assert page.getContent().size() == 2;
   }
 }

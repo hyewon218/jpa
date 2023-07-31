@@ -1,21 +1,7 @@
 package me.hyewon.jpa.thread;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class ThreadRepository {
+public interface ThreadRepository extends JpaRepository<Thread, Long> {
 
-    @PersistenceContext
-    EntityManager entityManager;
-
-    public Thread insertThread(Thread thread) {
-        entityManager.persist(thread);
-        return thread;
-    }
-
-    public Thread selectThread(Long id) {
-        return entityManager.find(Thread.class, id);
-    }
 }

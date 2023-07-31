@@ -30,7 +30,6 @@ class UserChannelRepositoryTest {
 
         // when
         // 각각의 entity 저장(영속성 상태)
-        // 불필요한 코드 -> 다음 강의에 해결
         var savedChannel = channelRepository.insertChannel(newChannel);
         var savedUser = userRepository.insertUser(newUser);
 
@@ -48,7 +47,7 @@ class UserChannelRepositoryTest {
         // given
         var newChannel = Channel.builder().name("new-channel").build();
         var newUser = User.builder().username("new_user").password("new-pass").build();
-        newChannel.joinUser(newUser);
+        newChannel.joinUser(newUser); // userChannels cascade = CascadeType.ALL -> joinUser 만 하더라도 실제 저장이 된다!
 
         // when
         var savedChannel = channelRepository.insertChannel(newChannel);

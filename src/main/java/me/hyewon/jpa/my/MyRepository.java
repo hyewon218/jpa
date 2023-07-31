@@ -1,21 +1,13 @@
 package me.hyewon.jpa.my;
 
-import lombok.Setter;
+import java.io.Serializable;
+import java.util.Optional;
+import org.springframework.data.repository.NoRepositoryBean;
+import org.springframework.data.repository.Repository;
 
-import java.util.HashMap;
+// Repository 기능을 제한
+@NoRepositoryBean // 상위 인터페이스 개념을 하나 더 만들어서 열어줄 메소드만 선언해준다.
+public interface MyRepository<User, ID extends Serializable> extends Repository<User, ID> {
 
-@Setter
-public class MyRepository {
-
-    private HashMap<Long, String> dataTable; // DB 테이블을 의미
-
-    public String find(Long id) {
-        return dataTable.getOrDefault(id, "");
-    }
-
-    public Long save(String data) {
-        var newId = Long.valueOf(dataTable.size());
-        this.dataTable.put(newId, data);
-        return newId;
-    }
+  Optional<User> findByUsername(String username);
 }

@@ -1,6 +1,7 @@
 package me.hyewon.jpa.user;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import me.hyewon.jpa.my.MyRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends MyRepository<User, Long> {
+
 }

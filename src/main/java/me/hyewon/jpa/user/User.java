@@ -14,7 +14,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import me.hyewon.jpa.mention.Mention;
+import me.hyewon.jpa.mention.CommentMention;
+import me.hyewon.jpa.mention.ThreadMention;
 import me.hyewon.jpa.userchannel.UserChannel;
 
 
@@ -57,7 +58,10 @@ public class User {
   Set<UserChannel> userChannels = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  Set<Mention> mentions = new LinkedHashSet<>();
+  Set<CommentMention> commentMentions = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  Set<ThreadMention> threadMentions = new LinkedHashSet<>();
 
     /*
       연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.

@@ -16,8 +16,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.hyewon.jpa.channel.Channel;
+import me.hyewon.jpa.comment.Comment;
 import me.hyewon.jpa.common.Timestamp;
-import me.hyewon.jpa.mention.Mention;
+import me.hyewon.jpa.emotion.ThreadEmotion;
+import me.hyewon.jpa.mention.ThreadMention;
 import me.hyewon.jpa.user.User;
 
 // lombok
@@ -56,7 +58,13 @@ public class Thread extends Timestamp {
   private Channel channel;
 
   @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
-  Set<Mention> mentions = new LinkedHashSet<>();
+  private Set<Comment> comments = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<ThreadMention> mentions = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "thread", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Set<ThreadEmotion> emotions = new LinkedHashSet<>();
 
   /**
    * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
@@ -67,9 +75,19 @@ public class Thread extends Timestamp {
   }
 
   public void addMention(User user) {
-    var mention = Mention.builder().user(user).thread(this).build();
+    var mention = ThreadMention.builder().user(user).thread(this).build();
     this.mentions.add(mention);
-    user.getMentions().add(mention);
+    user.getThreadMentions().add(mention);
+  }
+
+  public void addComment(Comment comment) {
+    this.comments.add(comment);
+    comment.setThread(this);
+  }
+
+  public void addEmotion(User user, String body) {
+    var emotion = ThreadEmotion.builder().user(user).thread(this).body(body).build();
+    this.emotions.add(emotion);
   }
 
     /*

@@ -15,11 +15,4 @@ public class Timestamp {
 
   private LocalDateTime modifiedAt;
 
-  public void updateCreatedAt() {
-    this.createdAt = LocalDateTime.now();
-  }
-
-  public void updateModifiedAt() {
-    this.modifiedAt = LocalDateTime.now();
-  }
 }

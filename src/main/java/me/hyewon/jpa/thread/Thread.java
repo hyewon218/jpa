@@ -16,6 +16,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.hyewon.jpa.channel.Channel;
+import me.hyewon.jpa.common.Timestamp;
 import me.hyewon.jpa.mention.Mention;
 import me.hyewon.jpa.user.User;
 
@@ -25,7 +26,7 @@ import me.hyewon.jpa.user.User;
 
 // jpa
 @Entity
-public class Thread {
+public class Thread extends Timestamp {
 
   /**
    * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.

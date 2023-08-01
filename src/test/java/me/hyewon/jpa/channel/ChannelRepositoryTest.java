@@ -1,5 +1,7 @@
 package me.hyewon.jpa.channel;
 
+import com.querydsl.core.types.Predicate;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,19 +13,35 @@ import org.springframework.transaction.annotation.Transactional;
 @Rollback(value = false)
 class ChannelRepositoryTest {
 
-    @Autowired
-    private ChannelRepository channelRepository;
+  @Autowired
+  private ChannelRepository channelRepository;
 
-    @Test
-    void insertSelectChannelTest() {
-        // given
-        var newChannel = Channel.builder().name("new-channel").build();
+  @Test
+  void insertSelectChannelTest() {
+    // given
+    var newChannel = Channel.builder().name("new-channel").build();
 
-        // when
-        var savedChannel = channelRepository.insertChannel(newChannel);
+    // when
+    var savedChannel = channelRepository.save(newChannel);
 
-        // then
-        var foundChannel = channelRepository.selectChannel(savedChannel.getId());
-        assert foundChannel.getId().equals(savedChannel.getId());
-    }
+    // then
+    var foundChannel = channelRepository.findById(savedChannel.getId());
+    assert foundChannel.get().getId().equals(savedChannel.getId());
+  }
+
+  @Test
+  void queryDslTest() {
+    // given
+    var newChannel = Channel.builder().name("hyewon").build();
+    channelRepository.save(newChannel);
+
+    Predicate predicate = QChannel.channel
+        .name.equalsIgnoreCase("HYEWON");
+
+    // when
+    Optional<Channel> optional = channelRepository.findOne(predicate);
+
+    // then
+    assert optional.get().getName().equals(newChannel.getName());
+  }
 }

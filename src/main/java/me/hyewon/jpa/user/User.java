@@ -1,11 +1,21 @@
 package me.hyewon.jpa.user;
 
-import jakarta.persistence.*;
-import lombok.*;
-import me.hyewon.jpa.userchannel.UserChannel;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import me.hyewon.jpa.mention.Mention;
+import me.hyewon.jpa.userchannel.UserChannel;
 
 
 // lombok
@@ -17,34 +27,37 @@ import java.util.Set;
 @Table(name = "users") // user 라는 이름을 테이블을 사용할 수 없기 때문에 users 로 바꿔줘야 한다.
 public class User {
 
-    /**
-     * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
+  /**
+   * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", nullable = false)
+  private Long id;
 
-    @Column(length = 25)
-    private String username;
+  @Column(length = 25)
+  private String username;
 
-    @Column(length = 25)
-    private String password;
+  @Column(length = 25)
+  private String password;
 
-    /**
-     * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
-     */
-    @Builder
-    public User (String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+  /**
+   * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
+   */
+  @Builder
+  public User(String username, String password) {
+    this.username = username;
+    this.password = password;
+  }
 
-    /**
-     * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
-     */
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<UserChannel> userChannels = new LinkedHashSet<>();
+  /**
+   * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
+   */
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  Set<UserChannel> userChannels = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  Set<Mention> mentions = new LinkedHashSet<>();
 
     /*
       연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.

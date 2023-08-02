@@ -24,18 +24,7 @@ public class ThreadMention extends Timestamp {
    * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
    */
   @EmbeddedId
-  private ThreadMentionId mentionId;
-
-  /**
-   * 컬럼 - 연관관계 컬럼을 제외한 컬럼을 정의합니다.
-   */
-  @ManyToOne
-  @MapsId("user_id")
-  User user;
-
-  @ManyToOne
-  @MapsId("thread_id")
-  Thread thread;
+  private ThreadMentionId threadMentionId = new ThreadMentionId();
 
   /**
    * 생성자 - 약속된 형태로만 생성가능하도록 합니다.
@@ -44,12 +33,26 @@ public class ThreadMention extends Timestamp {
   public ThreadMention(User user, Thread thread) {
     this.user = user;
     this.thread = thread;
+    this.threadMentionId = getThreadMentionId(user, thread);
+  }
+
+  private static ThreadMentionId getThreadMentionId(User user, Thread thread) {
+    var id = new ThreadMentionId(); // Embedded 할 때는 id 를 넣어줘야 한다.
+    id.setUserId(user.getId());
+    id.setThreadId(thread.getId());
+    return id;
   }
 
   /*
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
+  @ManyToOne
+  @MapsId("user_id")
+  User user;
 
+  @ManyToOne
+  @MapsId("thread_id")
+  Thread thread;
   /*
    * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.
    */

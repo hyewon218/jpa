@@ -25,15 +25,17 @@ public class ThreadRepositoryQueryImpl implements ThreadRepositoryQuery {
         .offset(pageable.getOffset())
         .limit(pageable.getPageSize());
 
-    query.orderBy(thread.mentions.any().createdAt.desc());
+    query.orderBy(thread.mentions.any().createdAt.desc()); // 멘션된 시간 기준 내림차순
 
     var threads = query.fetch();
     long totalSize = countQuery(cond).fetch().get(0);
 
+    // 쓰레드 댓글목록의 이모지목록 정보
     threads.stream()
         .map(Thread::getComments)
         .forEach(comments -> comments
-            .forEach(comment -> Hibernate.initialize(comment.getEmotions())));
+            .forEach(comment -> Hibernate.initialize(
+                comment.getEmotions()))); // initialize : 강제적으로 영속성 가져옴(DB 조회)
 
     return PageableExecutionUtils.getPage(threads, pageable, () -> totalSize);
   }
@@ -42,15 +44,15 @@ public class ThreadRepositoryQueryImpl implements ThreadRepositoryQuery {
     return jpaQueryFactory.select(expr)
         .from(thread)
         .leftJoin(thread.channel).fetchJoin()
-        .leftJoin(thread.emotions).fetchJoin()
-        .leftJoin(thread.comments).fetchJoin()
-        .leftJoin(thread.mentions).fetchJoin()
+        .leftJoin(thread.emotions).fetchJoin() // 이모지 정보
+        .leftJoin(thread.comments).fetchJoin() // 댓글 정보
+        .leftJoin(thread.mentions).fetchJoin() // 멘션 정보
         .where(
             channelIdEq(cond.getChannelId()),
             mentionedUserIdEq(cond.getMentionedUserId())
         );
   }
-  
+
   private JPAQuery<Long> countQuery(ThreadSearchCond cond) {
     return jpaQueryFactory.select(Wildcard.count)
         .from(thread)

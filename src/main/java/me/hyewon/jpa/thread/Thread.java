@@ -3,6 +3,7 @@ package me.hyewon.jpa.thread;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -54,6 +55,10 @@ public class Thread extends Timestamp {
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
   @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user; // 단방향
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "channel_id")
   private Channel channel;
 
@@ -74,18 +79,18 @@ public class Thread extends Timestamp {
     channel.addThread(this);
   }
 
-  public void addMention(User user) {
+  public void addMention(User user) { // 쓰레드에 멘션 연결
     var mention = ThreadMention.builder().user(user).thread(this).build();
     this.mentions.add(mention);
     user.getThreadMentions().add(mention);
   }
 
-  public void addComment(Comment comment) {
+  public void addComment(Comment comment) { // 쓰레드에 댓글 연결
     this.comments.add(comment);
-    comment.setThread(this);
+    comment.setThread(this); // 양방향
   }
 
-  public void addEmotion(User user, String body) {
+  public void addEmotion(User user, String body) { // 쓰레드에 이모지 연결
     var emotion = ThreadEmotion.builder().user(user).thread(this).body(body).build();
     this.emotions.add(emotion);
   }

@@ -71,16 +71,16 @@ class ThreadServiceImplTest {
   @DisplayName("전체 채널에서 내가 멘션된 쓰레드 상세정보 목록 테스트")
   void selectMentionedThreadListTest() {
     // given
-    var user = getTestUser("1", "1");
-    var user2 = getTestUser("2", "2");
-    var user3 = getTestUser("3", "3");
-    var user4 = getTestUser("3", "4");
+    var user = getTestUser("1", "1"); // 멘션된 user
+    var user2 = getTestUser("2", "2"); // 이모지 단 user
+    var user3 = getTestUser("3", "3"); // 댓글 단 user
+    var user4 = getTestUser("4", "4"); // 댓글에 이모지 단 user
     var newChannel = Channel.builder().name("c1").type(Type.PUBLIC).build();
     var savedChannel = channelRepository.save(newChannel);
-    var thread2 = getTestThread("", savedChannel, user
-        , user2, "e2", user3, "c2", user4, "ce2");
     var thread1 = getTestThread("message", savedChannel, user
         , user2, "e1", user3, "c1", user4, "ce1");
+    var thread2 = getTestThread("", savedChannel, user
+        , user2, "e2", user3, "c2", user4, "ce2");
 
     // when
     var pageDTO = PageDTO.builder().currentPage(1).size(100).build();
@@ -90,29 +90,34 @@ class ThreadServiceImplTest {
     assert mentionedThreadList.getTotalElements() == 2;
   }
 
+  // 작성자
   private User getTestUser(String username, String password) {
     var newUser = User.builder().username(username).password(password).build();
     return userRepository.save(newUser);
   }
 
+  // 댓글
   private Comment getTestComment(User user, String message) {
     var newComment = Comment.builder().message(message).build();
     newComment.setUser(user);
     return commentRepository.save(newComment);
   }
 
+  // 쓰레드 본문
   private Thread getTestThread(String message, Channel savedChannel) {
     var newThread = Thread.builder().message(message).build();
     newThread.setChannel(savedChannel);
     return threadService.insert(newThread);
   }
 
+  // 멘션된 쓰레드목록 정보
   private Thread getTestThread(String message, Channel channel, User mentionedUser) {
     var newThread = getTestThread(message, channel);
     newThread.addMention(mentionedUser);
     return threadService.insert(newThread);
   }
 
+  // 쓰레드 이모지목록 정보
   private Thread getTestThread(String message, Channel channel, User mentionedUser,
       User emotionUser, String emotionValue) {
     var newThread = getTestThread(message, channel, mentionedUser);
@@ -120,19 +125,21 @@ class ThreadServiceImplTest {
     return threadService.insert(newThread);
   }
 
+  // 쓰레드 댓글목록 정보
   private Thread getTestThread(String message, Channel channel, User mentionedUser,
       User emotionUser, String emotionValue, User commentUser, String commentMessage) {
     var newThread = getTestThread(message, channel, mentionedUser, emotionUser, emotionValue);
-    newThread.addComment(getTestComment(commentUser, commentMessage));
+    newThread.addComment(getTestComment(commentUser, commentMessage)); // 댓글 넣어줌
     return threadService.insert(newThread);
   }
 
+  // 쓰레드 댓글목록의 이모지목록 정보
   private Thread getTestThread(String message, Channel channel, User mentionedUser,
       User emotionUser, String emotionValue, User commentUser, String commentMessage,
       User commentEmotionUser, String commentEmotionValue) {
     var newThread = getTestThread(message, channel, mentionedUser, emotionUser, emotionValue,
         commentUser, commentMessage);
-    newThread.getComments()
+    newThread.getComments() // 넣어준 댓글 꺼내서 이모지 넣어주기
         .forEach(comment -> comment.addEmotion(commentEmotionUser, commentEmotionValue));
     return threadService.insert(newThread);
   }

@@ -20,7 +20,7 @@ public class PageDTO {
 
   public Pageable toPageable() {
     if (Objects.isNull(sortBy)) {
-      return PageRequest.of(currentPage - 1, size);
+      return PageRequest.of(currentPage - 1, size); // null 일 경우 sortBy 하지 않도록(오류 방지)
     } else {
       return PageRequest.of(currentPage - 1, size, Sort.by(sortBy).descending());
     }

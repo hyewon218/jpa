@@ -76,7 +76,7 @@ public class Comment {
     this.thread = thread;
   }
 
-  public void addEmotion(User user, String body) {
+  public void addEmotion(User user, String body) { // 댓글에 이모지 연결
     var emotion = CommentEmotion.builder().user(user).comment(this).body(body).build();
     this.emotions.add(emotion);
   }

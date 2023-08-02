@@ -2,6 +2,7 @@ package me.hyewon.jpa.mention;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import lombok.AccessLevel;
@@ -47,11 +48,13 @@ public class ThreadMention extends Timestamp {
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
   @ManyToOne
-  @MapsId("user_id")
+  @MapsId("userId")
+  @JoinColumn(name = "user_id")
   User user;
 
   @ManyToOne
-  @MapsId("thread_id")
+  @MapsId("threadId")
+  @JoinColumn(name = "thread_id")
   Thread thread;
   /*
    * 연관관계 편의 메소드 - 반대쪽에는 연관관계 편의 메소드가 없도록 주의합니다.

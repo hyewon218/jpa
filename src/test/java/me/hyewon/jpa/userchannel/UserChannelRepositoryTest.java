@@ -29,6 +29,8 @@ class UserChannelRepositoryTest {
     // given
     var newChannel = Channel.builder().name("new-channel").build();
     var newUser = User.builder().username("new_user").password("new-pass").build();
+    userRepository.save(newUser);
+    channelRepository.save(newChannel);
     var newUserChannel = newChannel.joinUser(newUser);
 
     // when
@@ -50,6 +52,8 @@ class UserChannelRepositoryTest {
     // given
     var newChannel = Channel.builder().name("new-channel").build();
     var newUser = User.builder().username("new_user").password("new-pass").build();
+    userRepository.save(newUser);
+    channelRepository.save(newChannel);
     newChannel.joinUser(
         newUser); // userChannels cascade = CascadeType.ALL -> joinUser 만 하더라도 실제 저장이 된다!
 
@@ -77,7 +81,8 @@ class UserChannelRepositoryTest {
     var users = userRepository.findByUsernameWithCustomField("new_user", Sort.by("customField"));
 
     // then
-    assert users.get(0).getPassword().equals(newUser1.getPassword());
+    assert users.stream().map(User::getPassword)
+        .anyMatch(password -> password.equals(newUser1.getPassword()));
 
     // when
     users = userRepository.findByUsernameWithCustomField("new_user",

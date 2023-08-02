@@ -2,6 +2,7 @@ package me.hyewon.jpa.mention;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import lombok.AccessLevel;
@@ -39,11 +40,13 @@ public class CommentMention extends Timestamp {
    * 연관관계 - Foreign Key 값을 따로 컬럼으로 정의하지 않고 연관 관계로 정의합니다.
    */
   @ManyToOne
-  @MapsId("user_id")
-  User user;
+  @MapsId("userId")
+  @JoinColumn(name = "user_id") // MapsId 에 컬럼명이 아닌 필드명으로
+      User user;
 
   @ManyToOne
-  @MapsId("comment_id")
+  @MapsId("commentId")
+  @JoinColumn(name = "comment_id")
   Comment comment;
 
   /**
